@@ -1,0 +1,107 @@
+
+def first_come_first_serve(tasks):
+    schedule = []
+    current_time = 0
+    total_completion_time = 0
+
+    for job_number, processing_time in tasks:
+        start_time = max(current_time, job_number)  # Start time is either current time or job arrival time
+        completion_time = start_time + processing_time  # Completion time
+        total_completion_time += completion_time
+        schedule.append((job_number, start_time, completion_time))
+
+        current_time = completion_time  # Update current time
+
+    return schedule, total_completion_time
+
+# Get user input for job details
+def get_job_details():
+    tasks = []
+    n = int(input("Enter the number of jobs: "))
+    for i in range(1, n + 1):
+        processing_time = int(input(f"Enter processing time for Job {i}: "))
+        tasks.append((i, processing_time))
+    return tasks
+
+# Example usage:
+tasks = get_job_details()
+schedule, total_completion_time = first_come_first_serve(tasks)
+
+print("Job Schedule:")
+for task in schedule:
+    job_number, start_time, completion_time = task
+    print(f"Job {job_number}: Start Time={start_time}, Completion Time={completion_time}")
+
+print(f"Total Completion Time: {total_completion_time}")
+
+
+/*
+This code implements the First-Come, First-Serve (FCFS) scheduling algorithm for a set of jobs. Here's a breakdown of how it works:
+
+### `first_come_first_serve` Function:
+- Input: Accepts a list of tuples `(job_number, processing_time)` representing each job's processing time.
+- Output: Returns a schedule of jobs along with their start and completion times, and the total completion time.
+- Algorithm:
+  - For each job, calculate its start time as the maximum of the current time and the job's arrival time (job number).
+  - Calculate the completion time as the sum of the start time and the job's processing time.
+  - Update the total completion time.
+  - Store the job's details (job number, start time, completion time) in the schedule.
+- Return: Returns the schedule and the total completion time.
+
+### `get_job_details` Function:
+- Input: Accepts no input. It prompts the user to input the number of jobs and the processing time for each job.
+- Output: Returns a list of tuples `(job_number, processing_time)` representing each job's details.
+
+### Example Usage:
+1. The user inputs the number of jobs and the processing time for each job using the `get_job_details` function.
+2. The `first_come_first_serve` function is called with the input job details.
+3. The schedule of jobs along with their start and completion times is printed.
+4. The total completion time is printed.
+
+### Sample Output:
+```
+Enter the number of jobs: 3
+Enter processing time for Job 1: 5
+Enter processing time for Job 2: 3
+Enter processing time for Job 3: 8
+
+Job Schedule:
+Job 1: Start Time=1, Completion Time=6
+Job 2: Start Time=6, Completion Time=9
+Job 3: Start Time=9, Completion Time=17
+
+Total Completion Time: 32
+```
+
+This output demonstrates the schedule of jobs using the FCFS algorithm and calculates the total completion time. Each job's start and completion times are printed along with their respective job numbers.
+
+*/
+
+
+
+/*
+Let's analyze the complexity of the provided code:
+
+### `first_come_first_serve` Function:
+- Time Complexity:
+  - Iterating over each job in the `tasks` list requires O(n) time, where n is the number of jobs.
+  - Calculating the start time and completion time for each job involves simple arithmetic operations, which are constant time operations.
+  - Thus, the overall time complexity is O(n), where n is the number of jobs.
+- Space Complexity:
+  - The space complexity is also O(n) because the `schedule` list stores the details of each job, and its size is directly proportional to the number of jobs.
+
+### `get_job_details` Function:
+- Time Complexity:
+  - The time complexity of this function is O(n), where n is the number of jobs.
+  - It prompts the user to input the processing time for each job, which takes constant time for each job.
+- Space Complexity:
+  - The space complexity of this function is O(n) because it returns a list of tuples, each representing the details of a job.
+
+### Overall:
+- Time Complexity:
+  - The dominant time complexity is O(n), where n is the number of jobs, as both functions iterate over the list of jobs once.
+- Space Complexity:
+  - The space complexity is also O(n) due to the storage of job details and the schedule in lists, each with size proportional to the number of jobs.
+
+In summary, the code has a linear time complexity with respect to the number of jobs, making it efficient for small to moderate-sized job sets. Additionally, the space complexity is also linear, indicating that the memory usage scales linearly with the number of jobs.
+*/

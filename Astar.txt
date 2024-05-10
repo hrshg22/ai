@@ -1,0 +1,181 @@
+from collections import deque
+
+class Graph:
+    def __init__(self):
+        self.adjacency_list = {}
+
+    def add_edge(self, u, v, weight):
+        if u not in self.adjacency_list:
+            self.adjacency_list[u] = []
+        self.adjacency_list[u].append((v, weight))
+
+    def get_neighbors(self, v):
+        return self.adjacency_list.get(v, [])
+
+    def a_star_algorithm(self, start_node, stop_node, h_values):
+        open_list = set([start_node])
+        closed_list = set([])
+        g = {}
+        g[start_node] = 0
+        parents = {}
+        parents[start_node] = start_node
+
+        while len(open_list) > 0:
+            n = None
+
+            for v in open_list:
+                if n is None or g[v] + h_values[v] < g[n] + h_values[n]:
+                    n = v
+
+            if n is None:
+                print('Path does not exist!')
+                return None
+
+            if n == stop_node:
+                reconst_path = []
+                while parents[n] != n:
+                    reconst_path.append(n)
+                    n = parents[n]
+                reconst_path.append(start_node)
+                reconst_path.reverse()
+                print('Path found: {}'.format(reconst_path))
+                return reconst_path
+
+            for (m, weight) in self.get_neighbors(n):
+                if m not in open_list and m not in closed_list:
+                    open_list.add(m)
+                    parents[m] = n
+                    g[m] = g[n] + weight
+                else:
+                    if g[m] > g[n] + weight:
+                        g[m] = g[n] + weight
+                        parents[m] = n
+                        if m in closed_list:
+                            closed_list.remove(m)
+                            open_list.add(m)
+            open_list.remove(n)
+            closed_list.add(n)
+        print('Path does not exist!')
+        return None
+
+def main():
+    g = Graph()
+
+    num_edges = int(input("Enter the number of edges: "))
+    for i in range(num_edges):
+        u, v = input("Enter edge (start end): ").split()
+        weight = int(input("Enter weight: "))
+        g.add_edge(u, v, weight)
+
+    h_values = {}
+    num_nodes = int(input("Enter the number of nodes: "))
+    for i in range(num_nodes):
+        node, h_value = input("Enter node and its heuristic value (node h_value): ").split()
+        h_values[node] = int(h_value)
+
+    start_node = input("Enter start node: ")
+    stop_node = input("Enter stop node: ")
+
+    path = g.a_star_algorithm(start_node, stop_node, h_values)
+    if path:
+        print("Shortest path:", path)
+    else:
+        print("No path found.")
+
+if __name__ == "__main__":
+    main()
+
+
+/*
+This code implements the A* algorithm for finding the shortest path in a weighted graph from a start node to a stop node. Let's break down how the code works:
+
+### `Graph` Class:
+- **`__init__` Method**: Initializes the graph's adjacency list.
+- **`add_edge` Method**: Adds an edge between two vertices `u` and `v` with a specified weight to the graph's adjacency list.
+- **`get_neighbors` Method**: Returns the neighbors of a vertex `v` along with their weights.
+- **`a_star_algorithm` Method**: Performs the A* algorithm to find the shortest path from a start node to a stop node in the graph.
+  - **Input**:
+    - `start_node`: The starting node for the path.
+    - `stop_node`: The target node to reach.
+    - `h_values`: A dictionary containing heuristic values for each node, used to guide the search.
+  - **Output**:
+    - Returns the shortest path from `start_node` to `stop_node`, or `None` if no path exists.
+  - **Algorithm**:
+    1. Initialize open and closed lists, `g` (cost from start to current node), and `parents` (to reconstruct path).
+    2. While there are nodes in the open list:
+       - Choose the node with the lowest `f(n)` value (estimated total cost from start to goal).
+       - If the chosen node is the stop node, reconstruct and return the path.
+       - Expand the chosen node by considering its neighbors.
+       - Update `g` and `parents` if a shorter path is found.
+    3. If the open list becomes empty, no path exists.
+
+### `main` Function:
+- Takes user input to construct the graph and set heuristic values for each node.
+- Calls the `a_star_algorithm` method to find the shortest path.
+- Prints the shortest path if found, otherwise, indicates that no path exists.
+
+### Sample Input:
+```
+Enter the number of edges: 6
+Enter edge (start end): A B
+Enter weight: 3
+Enter edge (start end): A C
+Enter weight: 6
+Enter edge (start end): B D
+Enter weight: 2
+Enter edge (start end): C D
+Enter weight: 1
+Enter edge (start end): C E
+Enter weight: 3
+Enter edge (start end): D E
+Enter weight: 4
+Enter the number of nodes: 5
+Enter node and its heuristic value (node h_value): A 6
+Enter node and its heuristic value (node h_value): B 4
+Enter node and its heuristic value (node h_value): C 3
+Enter node and its heuristic value (node h_value): D 1
+Enter node and its heuristic value (node h_value): E 0
+Enter start node: A
+Enter stop node: E
+```
+
+### Sample Output:
+```
+Path found: ['A', 'B', 'D', 'E']
+Shortest path: ['A', 'B', 'D', 'E']
+```
+
+This output indicates that the shortest path from node A to node E is A -> B -> D -> E with a total cost of 9.
+*/
+
+/*
+The provided implementation is a Python implementation of the A* algorithm for finding the shortest path in a graph. Let's break down each component of the implementation and elaborate on how it works:
+
+1. **Graph Class**: This class represents a graph using an adjacency list. It has methods to add edges, get neighbors of a node, and perform the A* algorithm.
+
+   - `__init__(self)`: Initializes an empty adjacency list.
+   - `add_edge(self, u, v, weight)`: Adds an edge between nodes `u` and `v` with the specified weight to the adjacency list.
+   - `get_neighbors(self, v)`: Returns the neighbors of node `v` from the adjacency list.
+   - `a_star_algorithm(self, start_node, stop_node, h_values)`: Performs the A* algorithm to find the shortest path from `start_node` to `stop_node` using the given heuristic values.
+
+2. **A* Algorithm** (`a_star_algorithm` method):
+   - Initializes open and closed lists, cost `g` from the start node to each node, and parent nodes.
+   - Iterates until there are nodes in the open list:
+     - Selects the node with the lowest combined cost `g[n] + h_values[n]`.
+     - If the selected node is the goal node, reconstructs and returns the path.
+     - Expands the selected node by considering its neighbors, updating their costs and parent nodes if necessary.
+     - Moves the selected node from the open list to the closed list.
+   - If no path is found, it prints a message and returns `None`.
+
+3. **Main Function**:
+   - Creates a graph instance and takes input for edges, weights, and heuristic values.
+   - Calls the `a_star_algorithm` method with the provided inputs.
+   - Prints the shortest path if found; otherwise, prints a message indicating no path was found.
+
+4. **Input Handling**:
+   - The user is prompted to enter the number of edges, each edge's start and end nodes, and its weight.
+   - The user also inputs the number of nodes and their corresponding heuristic values.
+   - Additionally, the start and stop nodes for the shortest path are entered by the user.
+
+This implementation allows users to input a graph with weights and heuristic values and finds the shortest path using the A* algorithm. It's a concise and straightforward implementation suitable for small to medium-sized graphs. However, for large graphs, more efficient data structures and algorithms might be needed for better performance.
+*/

@@ -1,0 +1,219 @@
+class NQueens:
+    def __init__(self, n):
+        self.n = n
+        self.board = [[0] * n for _ in range(n)]
+        self.solutions = []
+
+    def is_safe(self, row, col):
+        # Check if there's a queen in the same column
+        for i in range(row):
+            if self.board[i][col] == 1:
+                return False
+
+        # Check upper left diagonal
+        for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+            if self.board[i][j] == 1:
+                return False
+
+        # Check upper right diagonal
+        for i, j in zip(range(row, -1, -1), range(col, self.n)):
+            if self.board[i][j] == 1:
+                return False
+
+        return True
+
+    def solve_n_queens(self, row):
+        if row == self.n:
+            # Convert board to a printable solution
+            solution = [''.join('Q' if cell == 1 else '.' for cell in row) for row in self.board]
+            self.solutions.append(solution)
+            return True
+
+        for col in range(self.n):
+            if self.is_safe(row, col):
+                self.board[row][col] = 1
+                if self.solve_n_queens(row + 1):
+                    self.board[row][col] = 0  # backtrack
+                else:
+                    self.board[row][col] = 0
+
+        return False
+
+    def find_solutions(self):
+        self.solve_n_queens(0)
+        return self.solutions
+
+def main():
+    n = int(input("Enter the size of the chessboard (n x n): "))
+    n_queens = NQueens(n)
+    solutions = n_queens.find_solutions()
+
+    if solutions:
+        print(f"Found {len(solutions)} solutions for {n}-queens problem:")
+        for idx, solution in enumerate(solutions, start=1):
+            print(f"Solution {idx}:")
+            for row in solution:
+                print(row)
+            print()
+    else:
+        print("No solutions found for the n-queens problem.")
+
+if __name__ == "__main__":
+    main()
+
+
+
+/*
+This Python code solves the N-Queens problem using a backtracking algorithm. Here's how it works:
+
+### NQueens Class:
+
+1. Initialization:
+   - The constructor initializes the size of the chessboard (`n`), creates an empty chessboard (`board`), and initializes an empty list to store solutions (`solutions`).
+
+2. is_safe Method:
+   - This method checks if placing a queen at a given position `(row, col)` is safe.
+   - It checks if there are no queens in the same column, upper left diagonal, and upper right diagonal.
+
+3. solve_n_queens Method:
+   - This method recursively solves the N-Queens problem.
+   - It iterates through each column in the current row and tries to place a queen if it's safe.
+   - If a solution is found for the current configuration, it's added to the list of solutions.
+   - If no solution is found, it backtracks by resetting the current cell and tries the next column.
+
+4. find_solutions Method:
+   - This method initializes the backtracking process by calling `solve_n_queens` for the first row.
+   - Once all solutions are found, it returns the list of solutions.
+
+### Main Function:
+
+- The `main` function prompts the user to input the size of the chessboard (`n`).
+- It creates an instance of the `NQueens` class with the given size and finds solutions.
+- If solutions are found, it prints each solution with queens represented by 'Q' and empty cells by '.'.
+
+### Complexity:
+
+- The time complexity of this algorithm is exponential, O(n!), where `n` is the size of the chessboard. This is because there are n choices for the queen in the first row, (n-1) choices for the queen in the second row, and so on.
+- The space complexity is O(n^2) to store the chessboard and O(n) to store the list of solutions.
+
+Overall, this code efficiently solves the N-Queens problem using backtracking, finding and printing all possible solutions for a given chessboard size.
+*/
+
+/*
+Let's say we want to test the program for a 4x4 chessboard:
+
+
+Enter the size of the chessboard (n x n): 4
+The program should find and print all solutions for the 4-queens problem. Here are the expected solutions:
+
+
+Solution 1:
+.Q..
+...Q
+Q...
+..Q.
+
+Solution 2:
+..Q.
+Q...
+...Q
+.Q..
+The output should indicate that two solutions were found for the 4-queens problem, and it should print each solution accordingly.
+*/
+
+
+/*
+The N-Queens problem is a classic problem in the field of combinatorial optimization and computer science. It is a puzzle that asks for a way to place N queens on an N×N chessboard such that no two queens threaten each other. In chess, a queen can move horizontally, vertically, or diagonally, threatening any piece in its path.
+
+The objective of the N-Queens problem is to find all possible configurations of placing N queens on the chessboard such that no two queens share the same row, column, or diagonal. This essentially means that no two queens can attack each other.
+
+### Key Points about the N-Queens Problem:
+
+1. Problem Statement: Given an N×N chessboard, place N queens on the board so that no two queens threaten each other.
+
+2. Constraints: Queens must be placed in such a way that no two queens share the same row, column, or diagonal.
+
+3. Solutions: The goal is to find all possible configurations (or solutions) for placing N queens on the board satisfying the constraints.
+
+4. Difficulty: The problem becomes challenging as the size of the chessboard (N) increases due to the exponential increase in the number of possible configurations.
+
+### Example:
+
+For example, consider the 4-Queens problem:
+
+```
+Solution 1:       Solution 2:
+.Q..              ..Q.
+...Q              Q...
+Q...              ...Q
+..Q.              .Q..
+```
+
+In the first solution, queens are placed at positions (1, 1), (2, 3), (3, 4), and (4, 2) on the 4x4 chessboard. In the second solution, queens are placed at positions (1, 3), (2, 1), (3, 4), and (4, 2).
+
+### Applications:
+
+The N-Queens problem has applications in various fields, including computer science, mathematics, and artificial intelligence. Some notable applications include:
+
+- Combinatorial optimization: Studying strategies for efficiently solving combinatorial problems.
+- Constraint satisfaction problems: Formulating and solving problems that involve finding solutions subject to certain constraints.
+- Artificial intelligence: Developing algorithms and heuristics for solving problems that involve searching through large solution spaces.
+
+Overall, the N-Queens problem serves as a classic example of a challenging puzzle that can be solved using various techniques, including backtracking, constraint satisfaction algorithms, and optimization methods.
+*/
+
+/*
+Constraint Satisfaction Problems (CSPs) are well-suited for solving the N-Queens problem, as CSPs involve finding a solution that satisfies a set of constraints. In the case of the N-Queens problem, the constraints are:
+
+1. No two queens can be in the same row.
+2. No two queens can be in the same column.
+3. No two queens can be in the same diagonal.
+
+Here's how we can use CSP techniques to solve the N-Queens problem:
+
+### Variables:
+- Each variable represents a column on the chessboard. The domain of each variable represents the row where a queen can be placed in that column.
+
+### Constraints:
+1. Row Constraint: No two queens can be in the same row. This constraint ensures that each column has only one queen.
+2. Column Constraint: No two queens can be in the same column. This constraint ensures that each row has only one queen.
+3. Diagonal Constraint: No two queens can be in the same diagonal. This constraint ensures that no two queens threaten each other diagonally.
+
+### Backtracking Algorithm with CSP:
+
+1. Initialization: Start with an empty assignment.
+
+2. Variable Selection: Choose a column (variable) that hasn't been assigned yet.
+
+3. Value Selection: Choose a row (value) from the domain of the selected variable.
+
+4. Consistency Checking: Check if the assignment satisfies all constraints. If not, backtrack.
+
+5. Recursive Search: Recursively continue assigning values to variables until all variables are assigned or a solution is found.
+
+6. Backtracking: If no value can be assigned to a variable without violating constraints, backtrack to the previous variable and try a different value.
+
+7. Solution Check: If all variables are assigned and the assignment satisfies all constraints, a solution is found.
+
+### Advantages of CSP Approach:
+- CSPs provide a systematic way to represent and solve combinatorial problems with constraints.
+- Backtracking with CSPs efficiently prunes the search space by considering only valid assignments.
+
+### Implementation Notes:
+- The implementation requires defining variables, domains, and constraints.
+- Backtracking algorithm needs to be extended to handle constraint satisfaction.
+- Variable and value selection heuristics can be used to improve efficiency.
+
+In summary, using Constraint Satisfaction Problem (CSP) techniques, such as backtracking with consistency checking, provides an elegant and efficient approach to solving the N-Queens problem by systematically exploring the solution space while ensuring that all constraints are satisfied.
+
+*/
+
+
+
+
+
+
+
+
+
+

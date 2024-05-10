@@ -1,0 +1,176 @@
+import sys
+
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = [[0 for _ in range(vertices)] for _ in range(vertices)]
+
+    def add_edge(self, u, v, weight):
+        self.graph[u][v] = weight
+        self.graph[v][u] = weight  # Undirected graph
+
+    def min_key(self, key, mst_set):
+        min_val = sys.maxsize
+        min_index = None
+        for v in range(self.V):
+            if key[v] < min_val and not mst_set[v]:
+                min_val = key[v]
+                min_index = v
+        return min_index
+
+    def prim_mst(self):
+        parent = [-1] * self.V
+        key = [sys.maxsize] * self.V
+        key[0] = 0
+        mst_set = [False] * self.V
+
+        for _ in range(self.V):
+            u = self.min_key(key, mst_set)
+            mst_set[u] = True
+            for v in range(self.V):
+                if self.graph[u][v] > 0 and not mst_set[v] and key[v] > self.graph[u][v]:
+                    key[v] = self.graph[u][v]
+                    parent[v] = u
+
+        print("Edges in the Minimum Spanning Tree:")
+        for i in range(1, self.V):
+            print(f"{parent[i]} - {i} : {self.graph[i][parent[i]]}")
+
+        total_cost = sum(key)
+        print(f"\nMinimum Cost of MST: {total_cost}")
+
+# Usage example:
+g = Graph(5)
+g.add_edge(0, 1, 2)
+g.add_edge(0, 3, 6)
+g.add_edge(1, 2, 3)
+g.add_edge(1, 3, 8)
+g.add_edge(1, 4, 5)
+g.add_edge(2, 4, 7)
+g.add_edge(3, 4, 9)
+
+g.prim_mst()
+
+
+
+
+
+
+
+/*
+This code implements Prim's algorithm for finding the Minimum Spanning Tree (MST) of a graph. Prim's algorithm starts with an arbitrary node and grows the MST by adding the shortest edge that connects the tree to a vertex not yet in the tree until all vertices are included.
+
+Here's how the code works:
+
+- The `Graph` class represents an undirected graph using an adjacency matrix.
+- `add_edge` method is used to add edges to the graph.
+- `min_key` method is a helper function to find the vertex with the minimum key value which is not yet included in the MST.
+- `prim_mst` method implements the Prim's algorithm. It initializes key values as infinite, sets the key value of the first vertex as 0, and then iteratively finds the minimum key vertex and updates the key values of adjacent vertices. It also keeps track of the MST edges and calculates the total cost of the MST.
+- Finally, it prints the edges in the Minimum Spanning Tree and the total cost of the MST.
+
+The usage example at the bottom creates a graph with 5 vertices and adds edges between them, then calls `prim_mst` to find the MST and prints the result.
+
+If you have any specific questions about how the code works or how Prim's algorithm functions, feel free to ask!
+*/
+
+
+/*
+Sure, let's break down how Prim's algorithm works in the provided implementation:
+
+1. Initialization:
+   - `prim_mst` starts by initializing three arrays: `parent`, `key`, and `mst_set`.
+   - `parent` is an array that will store the parent of each vertex in the MST.
+   - `key` is an array that will store the key value of each vertex. Key value represents the minimum weight edge connecting the vertex to the MST.
+   - `mst_set` is a boolean array to track which vertices are already included in the MST. Initially, all vertices are marked as not included (`False`).
+
+2. Selecting the First Vertex:
+   - The algorithm starts with an arbitrary vertex (in this implementation, it's vertex 0).
+   - It sets the key value of this vertex to 0 to ensure that it will be selected first.
+
+3. Growing the MST:
+   - The algorithm iterates over all vertices.
+   - In each iteration, it selects the vertex with the minimum key value that is not yet included in the MST. This is done using the `min_key` function.
+   - Once a vertex `u` is selected, it's added to the MST (`mst_set[u]` is set to `True`).
+   - Then, it examines all adjacent vertices of `u` that are not yet included in the MST (`not mst_set[v]`) and updates their key values if a shorter path is found through `u`.
+   - The `parent` array is updated to record the parent of each vertex in the MST.
+
+4. Printing the MST:
+   - After the algorithm completes, the MST edges and their weights are printed.
+   - It iterates over all vertices (except the first one) and prints the edge and its weight using information stored in the `parent` and `graph` arrays.
+
+5. Calculating Total Cost:
+   - The total cost of the MST is calculated by summing up all the key values.
+
+6. Output:
+   - The edges of the Minimum Spanning Tree are printed, along with their weights.
+   - The total cost of the MST is printed.
+
+This implementation efficiently finds the Minimum Spanning Tree by greedily selecting the shortest edge at each step, ensuring that the MST remains connected and minimizes the total weight.	
+*/
+
+/*
+Certainly! Let's compare Prim's, Dijkstra's, and Kruskal's algorithms:
+
+1. Purpose:
+
+   - Prim's Algorithm: Finds the Minimum Spanning Tree (MST) of a connected, undirected graph.
+   
+   - Dijkstra's Algorithm: Finds the shortest path from a single source vertex to all other vertices in a weighted graph with non-negative edge weights.
+   
+   - Kruskal's Algorithm: Finds the Minimum Spanning Tree (MST) of a connected, undirected graph.
+
+2. Type of Graph:
+
+   - Prim's Algorithm: Works for connected, undirected graphs.
+   
+   - Dijkstra's Algorithm: Works for both directed and undirected graphs.
+   
+   - Kruskal's Algorithm: Works for connected, undirected graphs.
+
+3. Nature of the Problem:
+
+   - Prim's Algorithm: Focuses on finding a minimum cost connection between all vertices (forming a tree).
+   
+   - Dijkstra's Algorithm: Focuses on finding the shortest path from one vertex to all other vertices.
+   
+   - Kruskal's Algorithm: Focuses on finding the minimum cost set of edges that connect all vertices without forming cycles.
+
+4. Approach:
+
+   - Prim's Algorithm: Starts with an arbitrary vertex and grows the MST by adding the shortest edge that connects the tree to a vertex not yet in the tree.
+   
+   - Dijkstra's Algorithm: Uses a priority queue to select the vertex with the smallest tentative distance and updates distances to its neighbors, gradually expanding outward from the source vertex.
+   
+   - Kruskal's Algorithm: Sorts all edges in non-decreasing order of their weights, and then, while the MST does not contain all vertices, selects the smallest edge that doesn't produce a cycle.
+
+5. Edge Weights:
+
+   - Prim's Algorithm: Edge weights must be non-negative.
+   
+   - Dijkstra's Algorithm: Edge weights must be non-negative.
+   
+   - Kruskal's Algorithm: Works with any edge weights.
+
+6. Time Complexity:
+
+   - Prim's Algorithm: O(V^2) with an adjacency matrix representation, or O(E + V log V) with an adjacency list and a binary heap for efficient key updates.
+   
+   - Dijkstra's Algorithm: O((E + V) log V) with a binary heap for efficient key updates.
+   
+   - Kruskal's Algorithm: O(E log E) with sorting edges by weight.
+
+7. Applications:
+
+   - Prim's Algorithm: Network design, clustering, computer networks.
+   
+   - Dijkstra's Algorithm: Routing protocols in networks, pathfinding in video games, GPS navigation.
+   
+   - Kruskal's Algorithm: Network design, clustering, image segmentation.
+
+In summary, while all three algorithms are based on a greedy approach and are used in graph theory, they serve different purposes and are applicable to different types of problems. Prim's and Kruskal's algorithms find Minimum Spanning Trees, whereas Dijkstra's algorithm finds shortest paths in graphs.*/
+
+
+
+
+
+

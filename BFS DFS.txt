@@ -1,0 +1,139 @@
+from collections import defaultdict
+
+class Graph:
+    def __init__(self):
+        self.graph = defaultdict(list)
+
+    def add_edge(self, u, v):
+        self.graph[u].append(v)
+        self.graph[v].append(u)
+
+    def dfs_util(self, v, visited):
+        visited[v] = True
+        print(v, end=' ')
+
+        for i in self.graph[v]:
+            if not visited[i]:
+                self.dfs_util(i, visited)
+
+    def dfs(self, start):
+        visited = [False] * (max(self.graph) + 1)
+        self.dfs_util(start, visited)
+        print()
+
+    def bfs(self, start):
+        visited = [False] * (max(self.graph) + 1)
+        queue = []
+        queue.append(start)
+        visited[start] = True
+
+        while queue:
+            v = queue.pop(0)
+            print(v, end=' ')
+
+            for i in self.graph[v]:
+                if not visited[i]:
+                    queue.append(i)
+                    visited[i] = True
+        print()
+
+def main():
+    g = Graph()
+
+    num_edges = int(input("Enter the number of edges: "))
+    for _ in range(num_edges):
+        u, v = map(int, input("Enter edge (u v): ").split())
+        g.add_edge(u, v)
+
+    start_vertex = int(input("Enter the start vertex: "))
+
+    print("DFS traversal:")
+    g.dfs(start_vertex)
+
+    print("BFS traversal:")
+    g.bfs(start_vertex)
+
+if __name__ == "__main__":
+    main()
+
+
+
+/*
+This code defines a `Graph` class for representing an undirected graph and provides methods for performing Depth-First Search (DFS) and Breadth-First Search (BFS) traversals on the graph. Let's break down the code:
+
+### `Graph` Class:
+- `__init__` Method: Initializes the graph as a defaultdict of lists, where each key represents a vertex and the corresponding value is a list of adjacent vertices.
+- `add_edge` Method: Adds an undirected edge between two vertices `u` and `v`.
+- `dfs_util` Method: Helper function for performing DFS traversal recursively from a given vertex `v`. It marks the vertex as visited and explores its adjacent vertices recursively.
+- `dfs` Method: Initiates DFS traversal from a specified start vertex. It initializes a visited array and calls the `dfs_util` method.
+- `bfs` Method: Initiates BFS traversal from a specified start vertex. It initializes a visited array and a queue. It dequeues vertices from the queue, marks them as visited, and enqueues their adjacent vertices.
+
+### `main` Function:
+- Creates an instance of the `Graph` class.
+- Adds edges to the graph using the `add_edge` method.
+- Calls the `dfs` and `bfs` methods to perform DFS and BFS traversals from a specified start vertex.
+
+### Sample Output:
+```
+DFS traversal:
+1 3 2 4 8 7 
+BFS traversal:
+1 3 7 2 4 8 
+```
+
+This output demonstrates DFS and BFS traversals starting from vertex 1 in the graph. DFS explores the vertices depth-wise, while BFS explores vertices level by level.
+*/
+
+/*
+Certainly! Let's delve deeper into Breadth-First Search (BFS) and Depth-First Search (DFS), two fundamental graph traversal algorithms:
+
+### Depth-First Search (DFS):
+- Idea: DFS explores as far as possible along each branch before backtracking.
+- Implementation: DFS can be implemented using recursion or a stack.
+- Process:
+  1. Start at the initial vertex and mark it as visited.
+  2. Explore one of its unvisited neighbors.
+  3. Repeat step 2 recursively until all vertices are visited.
+  4. Backtrack if a dead end is reached.
+- Usage:
+  - Topological sorting.
+  - Detecting cycles in a graph.
+  - Finding connected components in an undirected graph.
+
+### Breadth-First Search (BFS):
+- Idea: BFS explores neighbors of a vertex before moving on to the next level of vertices.
+- Implementation: BFS is typically implemented using a queue.
+- Process:
+  1. Start at the initial vertex and mark it as visited.
+  2. Enqueue the initial vertex.
+  3. Dequeue a vertex from the queue and explore its unvisited neighbors.
+  4. Enqueue the unvisited neighbors.
+  5. Repeat steps 3-4 until all vertices are visited.
+- Usage:
+  - Finding shortest paths in an unweighted graph.
+  - Detecting connected components in an undirected graph.
+  - Solving puzzles like the shortest path in a maze.
+
+### Comparison:
+- Traversal Order:
+  - DFS: Explores as far as possible along each branch before backtracking.
+  - BFS: Explores neighbors of a vertex before moving to the next level of vertices.
+- Data Structure:
+  - DFS: Typically implemented using recursion or a stack.
+  - BFS: Typically implemented using a queue.
+- Completeness:
+  - DFS: May not find the shortest path.
+  - BFS: Finds the shortest path in an unweighted graph.
+- Space Complexity:
+  - DFS: Requires less memory compared to BFS.
+  - BFS: May require more memory due to the need to store all vertices at a level.
+- Applications:
+  - DFS: Suitable for problems involving traversal of all vertices or detecting cycles.
+  - BFS: Suitable for finding shortest paths and exploring neighbors uniformly.
+
+Both BFS and DFS have their strengths and weaknesses, and the choice between them depends on the specific problem requirements and characteristics of the graph being traversed.
+*/
+
+
+
+
